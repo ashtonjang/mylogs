@@ -1,1 +1,122 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-01-23T10:18:23+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Site Title</title><subtitle>An amazing website.</subtitle><author><name>Your Name</name></author></feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="http://localhost:4000/mylogs/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/mylogs/" rel="alternate" type="text/html" /><updated>2020-01-29T17:19:30+09:00</updated><id>http://localhost:4000/mylogs/feed.xml</id><title type="html">장송송의 블로그</title><subtitle>장승현의 개발블로그</subtitle><author><name>장승현</name><email>ashton2.3jang@gmail.com</email></author><entry><title type="html">Nodejs 배포하기 1편 - Jenkins, Git 설정하기</title><link href="http://localhost:4000/mylogs/nodejs/nodejs_deploy_1/" rel="alternate" type="text/html" title="Nodejs 배포하기 1편 - Jenkins, Git 설정하기" /><published>2020-01-29T15:44:30+09:00</published><updated>2020-01-29T15:44:30+09:00</updated><id>http://localhost:4000/mylogs/nodejs/nodejs_deploy_1</id><content type="html" xml:base="http://localhost:4000/mylogs/nodejs/nodejs_deploy_1/">&lt;h2 id=&quot;step0-참고사이트&quot;&gt;Step0. 참고사이트&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://daddyprogrammer.org/post/2697/springboot2-jenkins-deploy-gittag-rollback/&quot; target=&quot;_blank&quot;&gt;SpringBoot2로 Rest api 만들기(13) – Jenkins 배포(Deploy) + Git Tag Rollback&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;step1-jenkins--새로운-item&quot;&gt;Step1. Jenkins → 새로운 Item&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Enter an item name : 프로젝트 네임&lt;/li&gt;
+  &lt;li&gt;Freesttyle project 선택&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/1.png&quot; alt=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/1.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;step2-프로젝트-구성&quot;&gt;Step2. 프로젝트 구성&lt;/h2&gt;
+&lt;h3 id=&quot;general--이-빌드는-매개변수가-있습니다&quot;&gt;General → 이 빌드는 매개변수가 있습니다.&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Git Parameter 추가
+    &lt;ul&gt;
+      &lt;li&gt;Name : &lt;strong&gt;ROLLBACK_TAGS&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;아래 소스코드 관리에서 Git 추가할 때 파라미터 이름이랑 동일해야 함&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Description :  롤백인경우 TAG선택, 선택하지 않으면 master 브랜치 최신 리비전으로 배포&lt;/li&gt;
+      &lt;li&gt;Parameter Type : &lt;strong&gt;Tag&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;Default Value : &lt;strong&gt;origin/master&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;입력값 없으면 최신 리비전으로 배포하기 위해 설정&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;String Parameter (안해도 됨)
+    &lt;ul&gt;
+      &lt;li&gt;매개변수 명 : TAG_ID&lt;/li&gt;
+      &lt;li&gt;Default Value : Notitle&lt;/li&gt;
+      &lt;li&gt;설명 : TAG를 생성할때 추가로 ID를 붙일때 사용합니다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/2.png&quot; alt=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/2.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;step3-소스-코드-관리&quot;&gt;Step3. 소스 코드 관리&lt;/h2&gt;
+&lt;h3 id=&quot;git&quot;&gt;Git&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Repositories
+    &lt;ul&gt;
+      &lt;li&gt;Repository URL : git 주소를 입력&lt;/li&gt;
+      &lt;li&gt;Credentials : git에 인증 정보를 입력&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Branches to build
+    &lt;ul&gt;
+      &lt;li&gt;Branch Specifier (blank for ‘any’) : ${ROLLBACK_TAGS}
+        &lt;ul&gt;
+          &lt;li&gt;위에 추가 했던 &lt;strong&gt;Git Parameter Name 입력&lt;/strong&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/3.png&quot; alt=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/3.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;step4-빌드-유발&quot;&gt;Step4. 빌드 유발&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Bitbucket 에서 Webhook을 발생 시켜서 배포 시 추가&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;step5-build&quot;&gt;Step5. Build&lt;/h2&gt;
+&lt;h3 id=&quot;execute-shell---command&quot;&gt;Execute shell -&amp;gt; Command&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Nodejs 를 빌드하기 위한 Shell Script…&lt;/li&gt;
+  &lt;li&gt;pm2 deploy를 이용&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$BUILD_TYPE&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ROLLBACK_TAGS&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 첫 빌드환경 셋팅임으로 첫 한번만 실행해야 함&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#pm2 deploy ecosystem.config.js production setup&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 빌드하기 서버 폴더가 있을 경우 pm2 재시작. 아니면 pm2에 server 폴더 watch 걸면 됨.&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;lists&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;git diff &lt;span class=&quot;nt&quot;&gt;--name-only&lt;/span&gt; HEAD~&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$lists&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;server/&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;pm2 deploy ecosystem.config.js production ref &lt;span class=&quot;nv&quot;&gt;$ROLLBACK_TAGS&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;pm2 startOrReload ecosystem.config.js&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else
+    &lt;/span&gt;pm2 deploy ecosystem.config.js production ref &lt;span class=&quot;nv&quot;&gt;$ROLLBACK_TAGS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/4.png&quot; alt=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/4.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;step6-빌드-후-조치&quot;&gt;Step6. 빌드 후 조치&lt;/h2&gt;
+&lt;h3 id=&quot;git-publisher&quot;&gt;Git Publisher&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Push Only If Build Succeeds : check.&lt;/li&gt;
+  &lt;li&gt;Tags :
+    &lt;ul&gt;
+      &lt;li&gt;Tag to push : Release-$BUILD_ID-$TAG_ID&lt;/li&gt;
+      &lt;li&gt;Tag message :
+        &lt;ul&gt;
+          &lt;li&gt;TAG INFO
+  BuildNo - ${BUILD_NUMBER}
+  BuildTag - ${BUILD_TAG}&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Create new tag : check&lt;/li&gt;
+      &lt;li&gt;Target remote name : origin&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/5.png&quot; alt=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/5.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;slack-notifications&quot;&gt;Slack Notifications&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;성공 후 슬랙 발송을 위해.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/6.png&quot; alt=&quot;http://localhost:4000/mylogs/assets/images/nodejs_deploy/6.png&quot; /&gt;&lt;/p&gt;</content><author><name>장승현</name><email>ashton2.3jang@gmail.com</email></author><summary type="html">Step0. 참고사이트 SpringBoot2로 Rest api 만들기(13) – Jenkins 배포(Deploy) + Git Tag Rollback</summary></entry></feed>
