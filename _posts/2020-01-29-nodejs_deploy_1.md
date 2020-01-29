@@ -1,7 +1,8 @@
 ---
 title: 'Nodejs 배포하기 1편 - Jenkins, Git 설정하기'
-date: 2020-01-29 15:44:30 +0900
-categories: nodejs
+date: 2020-01-29
+categories: ['nodejs']
+tags: ['nodejs', 'jenkins', 'git', 'pm2']
 published : true
 ---
 
