@@ -80,3 +80,10 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
+
+
+_drafts/
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
