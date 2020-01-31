@@ -1,6 +1,6 @@
 ---
 title: 'Nodejs 배포하기 1편 - Jenkins, Git 설정하기'
-date: 2020-01-29
+last_modified_at: 2020-01-30
 categories: ['nodejs']
 tags: ['nodejs', 'jenkins', 'git', 'pm2']
 published : true
@@ -90,3 +90,11 @@ fi
 - 성공 후 슬랙 발송을 위해.
 
 ![{{"/assets/images/nodejs_deploy/6.png" | absolute_url}}]({{"/assets/images/nodejs_deploy/6.png" | absolute_url}})
+
+
+## Step7. Test
+- 좌측 메뉴 Build with Parameters
+- Pm2 설정까지 하고나서 실행
+- 빌드하고 롤백 테스트
+
+![{{"/assets/images/nodejs_deploy/7.png" | absolute_url}}]({{"/assets/images/nodejs_deploy/7.png" | absolute_url}})
